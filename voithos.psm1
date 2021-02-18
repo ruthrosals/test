@@ -98,6 +98,19 @@ function Repair-OfflineDisks {
   }
 }
 
+### WORKING ON THIS ONE #### 
+function Repair-OfflineDisks {
+  # Run Repair-Volume against each lettered partition, on each offline disk
+  Get-Disk | Where-Object OperationalStatus -eq "Offline"  | ForEach-Object {
+    Write-Host ("Repairing Disk " + $_.Number)
+    $_ | Set-Disk -isOffline $False
+    $_ | Set-Disk -isReadOnly $False
+    Get-Partition -DiskNumber $_.Number | Where-Object DriveLetter | Get-Volume | Repair-Volume
+    $_ | Set-Disk -isOffline $True
+  }
+}
+### WORKING ON THIS ONE #### 
+
 
 function Get-TargetBootPartition {
   # Get the target boot partition for migrating a VM - a Windows boot partition other than C:\
